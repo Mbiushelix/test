@@ -1,240 +1,109 @@
-# CPT-363 User Interface Design
+En computational essay av Yudhishtiran Vajeeston for Elvebakken videregående skole. 
 
-> ## What’s Happening This Week
-> #### How to explore the problem space?
-> ##### Important Reminders
-> * [Journey Map](#) assignment <span class='badge'> Tue Jun 12th 11:59pm PDT</span>
-> * [Course Reflection Log](#) assignment <span class='badge'> Fri Aug 3rd 11:59pm PDT</span>
->
-> ##### Required Reading
-> * [The Skeptic’s Guide To Low-Fidelity Prototyping](https://www.smashingmagazine.com/2014/10/the-skeptics-guide-to-low-fidelity-prototyping/)
->
-> [Required Reading Quiz due Jun 4th](https://canvas.sfu.ca/courses/44038/quizzes/166553 ':class=button')
+## Introduksjon: Planetariske ringer?
 
----
+![[Saturn.jpg]] **Bilde 1:** Nyeste bilde tatt av Saturn fra NASAs Hubble-romteleskop ([NASA](https://solarsystem.nasa.gov/resources/2490/saturns-rings-shine-in-hubble-portrait/?category=planets_saturn))
 
-## Week 1 (May 9 - 15)
 
-![UX - User Experience](images/12650723674_d5c85af332_k.jpg ':class=banner-image')
 
-### What is usability and user experience design?
+Antagelser for simuleringen: 
+- Alle partiklene har masse 1
+- Fysikken er tilpasset til to dimensjoner
 
-##### Summaries and Questions | Week 1  
-[May 9th Class One-minute Summaries](https://sso.canvaslms.com/courses/1924881/assignments/14377751)
 
-##### Presented Slides | Week 1  
-<div class="video-container-16by9"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRnnRFelgw1ksq_p8Eryg3dnyLCRRLPf5fBgdwdv9p-tCIwcxqWvzDGrGbjxGHL7HqEJVpmV26ntk3a/embed?start=false&loop=false&delayms=3000" frameborder="0" width=780" height="585" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></div>
 
-##### Supplemental Materials | Week 1  
-[Elements of User Experience by Jesse James Garrett](https://qofr.files.wordpress.com/2016/11/q-of-r-presentation-11.pdf)
-<div class="responsive-container"><iframe src="https://docs.google.com/viewer?url=https://qofr.files.wordpress.com/2016/11/q-of-r-presentation-11.pdf&embedded=true" style="width:780px; height:585px;" frameborder="0"></iframe></div>
+## Gravitasjonskrefter 
+Newtons gravitasjonslov $F_g = \gamma \frac{m_{1}m_2}{r^2}$ gjelder for en tredimensjonal verden. Ettersom denne essayen skal simulere galakser i en todimensjonal verden, må denne formen av gravitasjonsloven endres for å tilpasse behovet. 
 
-##### Downloads | Week 1
-[Course Overview](https://sso.canvaslms.com/courses/1924881/files/folder/Downloads/Course%20Overview)  
+Følgelig blir den aktuelle gravitasjonsloven følgende: $F_g=\gamma \frac{m_{1}m_2}{r} = \gamma \frac{1}{r}$ .
 
-##### Recommended Reading | Week 1  
-<a class="embedly-card" data-card-controls="0" data-card-align="left" href="https://www.nngroup.com/articles/usability-101-introduction-to-usability/">Usability 101: Introduction to Usability</a>
+Vi lar massen forbli det samme for alle partiklene i systemet og lar $\lbrace{ \vec{p_1}, \vec{p_2}, ... , \vec{p_n}\rbrace}$ inneholde alle possisjonsvektorene og $\lbrace{ \vec{v_1}, \vec{v_2}, ... , \vec{v_n}\rbrace}$ alle fartsvektorene til partiklene. Da får vi følgende når vi anvender Newtons todimensjonal gravitasjonslov for alle partiklene. 
 
-![Flowchart](images/4853380320_492f9dce63_b.jpg ':class=banner-image')
+$$
+\Sigma\vec{F_k} = \sum_{i=1}^{n}\gamma \frac{m^2 (\vec{p_i}-\vec{p_k})}{\left | \vec{p_i}-\vec{p_k} \right |^2}=\gamma m^2  \sum_{i=1}^{n}\frac{ \vec{p_e}}{\left | \vec{p_i}-\vec{p_k} \right |}=\gamma\sum_{i=1}^{n}\frac{ \vec{p_e}}{\left | \vec{p_i}-\vec{p_k} \right |}
+$$
 
----
+Hvor $\vec{F_k}$ er kraftsumvektoren og $p_k$ er posisjonsvektoren til enhver partikkel, mens  $\vec{p_e} =\frac{\vec{p_i}-\vec{p_k}}{\left | \vec{p_i}-\vec{p_k} \right |}$ er en enhetsvektor. Ved å kombinere formlene ovenfor med newtons 2.lov, får vi uttrykk for  $\vec{a}$.  
+$$\vec{a_k}=\gamma\sum_{i=1}^{n}\frac{ \vec{p_e}}{\left | \vec{p_i}-\vec{p_k} \right |}$$
+Ved å videre implementere dette får vi resultatet nedenfor. Fargen er en indikator på farten. Rødt betyr lav fart mens lyseblått betyr høy fart.
 
+<p align="center">
+<img src="https://media.giphy.com/media/bzAM8XaelRrofNLlES/giphy.gif" width="368.5" height="200.5" />
+</p>
 
-## Week 2 (May 16 - 22)
 
-### What does a holistic user experience design process look like?
+``` HLSL
+float2 forceVector = {0,0};
+    for (int i = 0; i < particleAmount; i++)
+    {
+        float r = distance(positions[id.x], positions[i]);
+        if (r > 1)
+        {
+           forceVector += (positions[i] - positions[id.x])/ (r*r);
+        }
+    }
 
-#### Summaries and Questions | Week 2   
-[May 16th Class One-minute Summaries](https://sso.canvaslms.com/courses/1924881/assignments/14377743)
+    velocity[id.x] += (forceVector*G)* dt;
+```
 
-#### Presented Slides | Week 2   
-<div class="video-container-16by9"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRnnRFelgw1ksq_p8Eryg3dnyLCRRLPf5fBgdwdv9p-tCIwcxqWvzDGrGbjxGHL7HqEJVpmV26ntk3a/embed?start=false&loop=false&delayms=3000" frameborder="0" width=780" height="585" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></div>
 
-#### CPT-363 UX Design Process/Toolkit | Week 2
-![UX Design Process/Toolkit](images/ux-toolkit-8-no-numbers.png)
+## Kollisjoner 
+Vi fokuserer på to vilkårlige partikler A og B. Når avstanden mellom disse er mindre eller lik summen av radiiene til partiklene vil de kollidere. Da setter vi opp et koordinatsystem som tar utgangspunkt i kollisjonspunktet. Se bildet nedenfor: 
 
-#### Downloads | Week 2
-[Product Reaction Cards](https://sso.canvaslms.com/courses/1924881/files/folder/Downloads/Product%20Reaction%20Cards)  
+<p align="center">
+<img src="https://github.com/Mbiushelix/spaghetti/blob/main/kollisjon.png"  width="900" />
+</p>
 
-#### Assignments | Week 2
-[Course Reflection Log](https://sso.canvaslms.com/courses/1413912/assignments/9519528)  
+**Figur 1:** Her er $\vec{n}$ og $\vec{t}$ vinkelrett på hverandre. Vektorene representerer henholdsvis normalvektoren og tangentvektoren. Fartsvektorene til partikkel A og B kan dekomponeres ut ifra disse to vektorene. 
 
-#### Quick Quiz | Week 2
-<iframe src="https://h5p.org/h5p/embed/214115" width="728" height="278" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *" title="User-Centered Design"></iframe><script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
+Vi ser at $\vec{n} = \frac{\vec{r}}{r}$ (siden normalvektoren er parallell med $\vec{r}$). Videre, kan vi regne oss fram til at $\vec{t}=(-r_y, r_x)$ med vektorregning. Med disse enhetsvektorene dekomponerer vi $\vec{v}_{0,A}$ og $\vec{v}_{0,B}$:
 
-#### Recommended Reading  
-<a class="embedly-card" data-card-controls="0" data-card-align="left" href="https://uxplanet.org/the-evolution-of-ux-process-methodology-47f52557178b">The Evolution of UX Process Methodology</a>
+$$\begin{align*}
+v_{0,A,n} = \vec{n} \cdot \vec{v}_{0,A}&, \quad v_{0,B,n} = \vec{n} \cdot \vec{v}_{0,B}
+\\
+v_{0,A,t} = \vec{t} \cdot \vec{v}_{0,A}&, \quad v_{0,B,t} = \vec{t} \cdot \vec{v}_{0,B}
+\end{align*}$$
 
----
+Under kollisjonen som vist i fig. 1 vil farten i $\vec{t}$ retningen forbli det samme, mens fartsvektorene i normalretningen ( $v_{0,A,n}$ og $v_{0,B,n}$ ) vil inngå in ett sentralt støt. Da får vi følgende ligninger: 
 
+$$
+\begin{align*}
+v_{A,0,t} &= v_{A,1,t} \\
+v_{B,0,t} &= v_{B,1,t}
+\end{align*}
+$$
 
-## Week 3 (May 23 - 29)
+$$
+v_{A,1,n}= \frac{C_r(v_{B,0,n}-v_{A,0,n})+v_{A,0,n}+v_{B,0,n}}{2}
+$$
 
-![Bullseye](images/6384294717_5047a35d48_b.jpg ':class=banner-image')
+Etter å ha funnet ... , finner vi ... slikt: 
 
-### How to make more strategic design decisions?
+$$
+\vec{v}_{1,A} = \vec{n} \cdot \vec{v}_{0,A,n} + \vec{t} \cdot \vec{v}_{0,A,t}, \quad \vec{v}_{1,A} = \vec{n} \cdot \vec{v}_{0,A,n} + \vec{t} \cdot \vec{v}_{0,A,t}
+$$
 
-#### Summaries and Questions | Week 3  
-[May 23rd Class One-minute Summaries](https://sso.canvaslms.com/courses/1924881/assignments/14377744)
 
-#### Presented Slides | Week 3  
-<div class="video-container-16by9"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRnnRFelgw1ksq_p8Eryg3dnyLCRRLPf5fBgdwdv9p-tCIwcxqWvzDGrGbjxGHL7HqEJVpmV26ntk3a/embed?start=false&loop=false&delayms=3000" frameborder="0" width=780" height="585" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></div>
+```HLSL
+for (int j = 0; j < particleAmount; j++)
+    {
+        float r = distance(positions[id.x], positions[j]);
 
-#### Supplemental Materials | Week 3  
-<div class="video-container-4by3"><iframe width="780" height="585" src="https://www.youtube.com/embed/a40QYgO-_aM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+        if (r < 1 && r != 0)
+        {
+            positions[id.x] = positions[j] + normalize(positions[id.x]-positions[j])*r;
+            velocity[id.x] = velocity[id.x] - (positions[id.x]-positions[j])*(dot(velocity[id.x]-velocity[j], positions[id.x]-positions[j]))/(r*r);
+        }
+    }
+```
 
-#### Assignments | Week 3
-[Journey Map](https://sso.canvaslms.com/courses/1924881/assignments/14377756)  
 
-#### Required Reading | Week 3  
-<a class="embedly-card" data-card-controls="0" data-card-align="left" href="https://www.aytech.ca/blog/user-journey-map/">What is a User Journey Map?</a>
+![](spagetti.gif)
 
----
+![[Pasted image 20221213192807.png]]
 
-## Week 4 (May 30 - Jun 5)
+![[Pasted image 20221213193122.png]]
+![[Pasted image 20221213193318.png]]
+## Konklusjon
 
-![Wireframe](images/6968244538_4c0f7c7e64_k.jpg ':class=banner-image')
-
-### How to explore the problem space?
-
-#### Summaries and Questions | Week 4  
-[May 30th Class One-minute Summaries](https://sso.canvaslms.com/courses/1924881/assignments/14377745)
-
-#### Presented Slides | Week 4    
-<div class="video-container-16by9"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRnnRFelgw1ksq_p8Eryg3dnyLCRRLPf5fBgdwdv9p-tCIwcxqWvzDGrGbjxGHL7HqEJVpmV26ntk3a/embed?start=false&loop=false&delayms=3000" frameborder="0" width=780" height="585" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe></div>
-
-#### Supplemental Materials | Week 4    
-<div class="video-container-4by3"><iframe width="780" height="585" src="https://www.youtube.com/embed/MwidSAlbEB8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-
-#### Downloads | Week 4  
-[4-UP BROWSERS + GRID](https://sso.canvaslms.com/courses/1924881/files/folder/Downloads/Sketching%20Templates/sneakpeekit-4-browsers)  
-[4-UP MOBILES + GRID](https://sso.canvaslms.com/courses/1924881/files/folder/Downloads/Sketching%20Templates/sneakpeekit-4-mobiles)  
-
-#### Required Reading | Week 4    
-<a class="embedly-card" data-card-controls="0" data-card-align="left" href="https://www.smashingmagazine.com/2014/10/the-skeptics-guide-to-low-fidelity-prototyping/">The Skeptic’s Guide To Low-Fidelity Prototyping</a>
-
----
-
-## Schedule
-
-### :fas fa-calendar fa-fw: Week 1 (May 9 - 15)
-**What is usability and user experience design?**  
-:fas fa-desktop fa-fw: [Introduction to UX Design](https://docs.google.com/presentation/d/e/2PACX-1vRnnRFelgw1ksq_p8Eryg3dnyLCRRLPf5fBgdwdv9p-tCIwcxqWvzDGrGbjxGHL7HqEJVpmV26ntk3a/pub?start=false&loop=false&delayms=3000)   
-:fas fa-book fa-fw: [Usability 101: Introduction to Usability](https://www.nngroup.com/articles/usability-101-introduction-to-usability/)  
-
-### :fas fa-calendar fa-fw: Week 2 (May 16 - 22)
-**What does a holistic user experience design process look like?**  
-:fas fa-keyboard fa-fw: [Course Reflection Log](https://sso.canvaslms.com/courses/1924881/assignments/14377752) <span class='badge'> Fri Aug 3rd 11:59pm PDT</span>  
-:fas fa-desktop fa-fw: [The Process of UX Design](https://docs.google.com/presentation/d/e/2PACX-1vRnnRFelgw1ksq_p8Eryg3dnyLCRRLPf5fBgdwdv9p-tCIwcxqWvzDGrGbjxGHL7HqEJVpmV26ntk3a/pub?start=false&loop=false&delayms=3000)   
-:fas fa-book fa-fw: [The Evolution of UX Process Methodology](https://uxplanet.org/the-evolution-of-ux-process-methodology-47f52557178b)  
-
-### :fas fa-calendar fa-fw: Week 3 (May 23 - 29)
-**How to make more strategic design decisions?**  
-:fas fa-keyboard fa-fw: [Journey Map](https://sso.canvaslms.com/courses/1924881/assignments/14377756) <span class='badge'> Tue Jun 12th 11:59pm PDT</span>  
-:fas fa-folder fa-fw: [Informed Consent Materials](https://sso.canvaslms.com/courses/1924881/files/folder/Downloads/Informed%20Consent)  
-:fas fa-desktop fa-fw: [Strategic UX Design](https://docs.google.com/presentation/d/e/2PACX-1vRnnRFelgw1ksq_p8Eryg3dnyLCRRLPf5fBgdwdv9p-tCIwcxqWvzDGrGbjxGHL7HqEJVpmV26ntk3a/pub?start=false&loop=false&delayms=3000)   
-:fas fa-book fa-fw: [What is a User Journey Map?](https://www.aytech.ca/blog/user-journey-map/)  
-
-### :fas fa-calendar fa-fw: Week 4 (May 30 - Jun 5)
-**How to explore the problem space?**  
-:fas fa-desktop fa-fw: [Prototyping](https://docs.google.com/presentation/d/e/2PACX-1vRnnRFelgw1ksq_p8Eryg3dnyLCRRLPf5fBgdwdv9p-tCIwcxqWvzDGrGbjxGHL7HqEJVpmV26ntk3a/pub?start=false&loop=false&delayms=3000)   
-:fas fa-book fa-fw: [The Skeptic’s Guide To Low-Fidelity Prototyping](https://www.smashingmagazine.com/2014/10/the-skeptics-guide-to-low-fidelity-prototyping/)  
-:fas fa-users fa-fw: In-class office hours (tentative)  
-
-### :fas fa-calendar fa-fw: Week 5 (Jun 6 - 12)
-**How to plan, conduct, and summarize usability tests?**  
-:fas fa-desktop fa-fw: [Usability Testing](https://docs.google.com/presentation/d/e/2PACX-1vRnnRFelgw1ksq_p8Eryg3dnyLCRRLPf5fBgdwdv9p-tCIwcxqWvzDGrGbjxGHL7HqEJVpmV26ntk3a/pub?start=false&loop=false&delayms=3000)   
-:fas fa-book fa-fw: [The Art of Guerrilla Usability Testing](http://www.uxbooth.com/articles/the-art-of-guerrilla-usability-testing/)  
-:fas fa-users fa-fw: In-class office hours (tentative)
-
----
-
-## Resources
-
-### Reflective Writing  
-*   [A short guide to reflective writing](https://intranet.birmingham.ac.uk/as/libraryservices/library/skills/asc/documents/public/Short-Guide-Reflective-Writing.pdf)
-*   [How Reflecting On Your Work Can Make You A Better Designer](https://medium.com/center-centre-cohort-01/how-reflecting-on-your-work-can-make-you-a-better-designer-5ce2f3886f51)
-*   [Online Guide to Reflective Writing](https://nile.northampton.ac.uk/bbcswebdav/pid-1244383-dt-content-rid-3278540_1/courses/Centre-for-Achievement-and-Performance/Skills/Reflective%20Writing/Reflective%20Writing%20-%20Feb%202017.pdf)
-*   [Reflective Toolbox](http://writeonline.ca/media/documents/ReflectiveToolbox.pdf)
-*   [Reflective writing: a basic introduction](http://www.port.ac.uk/media/contacts-and-departments/student-support-services/ask/downloads/Reflective-writing---a-basic-introduction.pdf)
-
-### UX Platform Guideline Collections  
-*   [Android User Interface Design Guidelines](https://developer.android.com/guide/practices/ui_guidelines/index.html)
-*   [Google Material Design Guidelines](https://material.google.com/)
-*   [iOS Human Interface Design Guidelines (iPhone and iPad)](https://developer.apple.com/ios/human-interface-guidelines/)
-*   [KDE Human Interface Design Guidelines](https://community.kde.org/KDE_Visual_Design_Group/HIG)
-*   [OS X Human Interface Design Guidelines](https://developer.apple.com/library/mac/documentation/UserExperience/Conceptual/OSXHIGuidelines/index.html#//apple_ref/doc/uid/TP40002720-TPXREF101)
-*   [Windows App Design Guidelines (Touch)](https://msdn.microsoft.com/en-us/library/dn742468.aspx)
-
-### UX Templates  
-*   [Contextual Interview Form](http://userfocus.co.uk/pdf/cisheet.pdf)  
-*   [One Page User Research Plan](https://www.smashingmagazine.com/2012/01/ux-research-plan-stakeholders-love/)  
-*   [Templates & Downloadable Documents | Usability.gov](http://www.usability.gov/how-to-and-tools/resources/templates.html)
-*   [cxpartners | Resources](http://www.cxpartners.co.uk/ux-resources/)
-*   [The PM Toolkit](http://thepmtoolkit.com/)
-*   [UX Project Checklist](http://uxchecklist.github.io/)
-
-### UX Design Checklists  
-*   [A Checklist for Designing Mobile Input Fields](http://www.nngroup.com/articles/mobile-input-checklist/)  
-*   [Mobile UX Checklist (PDF, by Mobify)](http://downloads.mobify.com.s3.amazonaws.com/ebooks/25-Ways-to-Make-Your-Mobile-E-Commerce-Revenue-Skyrocket-Mobify.pdf)  
-*   [One-Page Touch Interaction Design Checklist (PDF)](https://canvas.sfu.ca/courses/38847/files/folder/Handouts/Touch%20Interaction%20Checklist)
-*   [Usability checklist (Userium)](https://userium.com/)
-*   [UX Project Checklist](http://uxchecklist.github.io/)
-
-### UX Technique Collections  
-*   [Methods | Usability.gov](http://www.usability.gov/how-to-and-tools/methods/)
-*   [Methods | Usability Body of Knowledge](http://www.usabilitybok.org/methods)
-*   [Usability Planner](http://usabilityplanner.org/#home)
-*   [UX Techniques (by UX Mastery)](http://uxmastery.com/resources/techniques)
-
-### UX Article Collections  
-*   [The UX Bookmark](http://www.theuxbookmark.com/)
-*   [User Experience Magazine (UXPA)](http://uxpamagazine.org/)
-*   [UI/UX Articles (Medium)](https://medium.com/ui-ux-articles)
-
-### UX eBooks  
-*   [50 UX Best Practices by Above the Fold (email address required)](http://www.userexperiencedesigns.com/)
-*   [Bright Ideas for User Experience Designers](http://www.userfocus.co.uk/ebooks/uxdesign.html)
-*   [The Fable of the User-Centered Designer](http://www.userfocus.co.uk/fable/)
-
-### UX Design MOOCs & Courses
-*   [Human-Computer Interaction | Coursera](https://www.coursera.org/course/hciucsd)
-*   [The Design of Everyday Things | Udacity](https://www.udacity.com/course/design101)
-*   [Rapid Wireframing: Finding the Right Product Design](https://www.skillshare.com/classes/design/Rapid-Wireframing-Finding-the-Right-Product-Design/1947996659)
-
-### UX Podcast Collections  
-*   [Design Critique: Products for People](http://designcritique.net/)
-*   [Podcasts - UIE Brain Sparks](http://www.uie.com/brainsparks/topics/podcasts/)
-*   [Boagworld Podcast](https://boagworld.com/show/)
-*   [User Experience Podcast](http://www.infodesign.com.au/uxpod)
-
-### UX Video Collections  
-*   [Google Developers Channel](https://www.youtube.com/user/GoogleDevelopers/search?query=user+experience+usability)  
-*   [Interaction Design Association Vimeo Channels](http://vimeo.com/ixdaglobal/channels)  
-*   [NNgroup YouTube Channel](https://www.youtube.com/user/NNgroup/videos)  
-*   [UX Mastery YouTube Channel](https://www.youtube.com/channel/UCXmQyv8sAjmvgCCgvRKi9hw)
-
----
-
-## LMS Links
-
-[Calendar](https://canvas.sfu.ca/courses/44038/calendar)  
-[Assignments](https://canvas.sfu.ca/courses/44038/assignments )  
-[Quizzes](https://canvas.sfu.ca/courses/44038/quizzes)  
-[Class Discussions](https://canvas.sfu.ca/courses/44038/discussion_topics)  
-[Syllabus](https://canvas.sfu.ca/courses/44038/assignments/syllabus)  
-
----
-
-## Contact
-
-### Course Instructor  
-Some Name  
-somename@somewhere.edu  
-
-Online office hours:  
-Mondays 12:00-1:30pm  
-Fridays 12:00-1:00pm  
-
-Suggestion, concern or complaint?  
-Send me your [anonymous course feedback](#)!
+![[movie_016.mp4]]
